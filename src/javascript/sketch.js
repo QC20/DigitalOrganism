@@ -7,9 +7,9 @@ const ALIVE = 1;
 const n = 600;
 const brushThickness = 100;
 let cells;
-let zoom;
 let g;
 let STYLE = 0;
+let scale, offsetX, offsetY;
 
 // Conditions for cell state changes
 const conditions = {
@@ -26,20 +26,31 @@ const conditions = {
 
 function setup() {
   p5.disableFriendlyErrors = true;
-  const m = min(windowWidth, windowHeight);
-  createCanvas(m, m);
-  zoom = n / m;
-
+  createCanvas(windowWidth, windowHeight);
+  
   cells = new Uint8Array(n * n).fill(DEAD);
   g = createGraphics(n, n);
   g.background(0).pixelDensity(1).loadPixels();
+  
+  calculateScaleAndOffset();
+}
+
+function calculateScaleAndOffset() {
+  scale = min(windowWidth / n, windowHeight / n);
+  offsetX = (windowWidth - n * scale) / 2;
+  offsetY = (windowHeight - n * scale) / 2;
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  calculateScaleAndOffset();
 }
 
 function draw() {
   background("white");
 
-  const mx = int(constrain(mouseX * zoom, 0, n - 1));
-  const my = int(constrain(mouseY * zoom, 0, n - 1));
+  const mx = int(constrain((mouseX - offsetX) / scale, 0, n - 1));
+  const my = int(constrain((mouseY - offsetY) / scale, 0, n - 1));
 
   if (mouseIsPressed) {
     const b = brushThickness;
@@ -148,7 +159,7 @@ function draw() {
   }
   cells = next;
   g.updatePixels();
-  image(g, 0, 0, width, height);
+  image(g, offsetX, offsetY, n * scale, n * scale);
 }
 
 function keyPressed() {
