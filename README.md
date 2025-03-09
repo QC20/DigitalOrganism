@@ -43,4 +43,4 @@ By experimenting with DigitalOrganism, you can gain insights into how simple rul
 
 Open `index.html` in a modern web browser to run the simulation. Click and drag on the canvas to interact with the cells and observe how patterns evolve over time.
 
-Happy exploring!
+Happy exploring! :-)
